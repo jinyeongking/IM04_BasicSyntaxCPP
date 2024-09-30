@@ -15,11 +15,12 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	virtual void Tick(float DeltaTime) override;
 
-private:
-	UStaticMeshComponent* MeshComp;
+protected:
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+		UStaticMeshComponent* MeshComp;
 
 
 
