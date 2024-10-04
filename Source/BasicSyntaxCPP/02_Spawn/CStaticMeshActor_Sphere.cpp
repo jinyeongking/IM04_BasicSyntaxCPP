@@ -1,9 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "CStaticMeshActor_Sphere.h"
 
-ACStaticMeshActorBase_Sphere::ACStaticMeshActorBase_Sphere()
+ACStaticMeshActor_Sphere::ACStaticMeshActor_Sphere()
 {
-	//Todo. 
+	ConstructorHelpers::FObjectFinder<UStaticMesh> SMAsset(TEXT("/Game/StaticMeshes/SM_Sphere"));
+	if (SMAsset.Succeeded())
+	{
+		MeshComp->SetStaticMesh(SMAsset.Object);
+	}
 }

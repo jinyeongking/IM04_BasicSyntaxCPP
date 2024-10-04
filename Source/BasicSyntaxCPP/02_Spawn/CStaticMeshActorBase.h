@@ -15,13 +15,17 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:
+public:	
 	virtual void Tick(float DeltaTime) override;
+
+private:
+	UFUNCTION()
+	void ChangeColor();
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
-		UStaticMeshComponent* MeshComp;
+	UStaticMeshComponent* MeshComp;
 
-
-
+private:
+	UMaterialInstanceDynamic* DynamicMaterial;
 };

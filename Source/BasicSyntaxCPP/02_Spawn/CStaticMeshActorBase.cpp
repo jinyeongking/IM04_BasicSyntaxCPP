@@ -1,12 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "CStaticMeshActorBase.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialInstanceConstant.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 
-// Sets default values
 ACStaticMeshActorBase::ACStaticMeshActorBase()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("MeshComp");
@@ -14,17 +13,38 @@ ACStaticMeshActorBase::ACStaticMeshActorBase()
 
 }
 
-// Called when the game starts or when spawned
 void ACStaticMeshActorBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	UObject* Asset = StaticLoadObject(UMaterialInstanceConstant::StaticClass(), nullptr, TEXT("/Game/StaticMeshes/MI_StaticMesh"));
+	UMaterialInstanceConstant* MaterialAsset = Cast<UMaterialInstanceConstant>(Asset);
+	if (MaterialAsset)
+	{
+		DynamicMaterial = UMaterialInstanceDynamic::Create(MaterialAsset, nullptr);
+		MeshComp->SetMaterial(0, DynamicMaterial);
+
+		UKismetSystemLibrary::K2_SetTimer(this, "ChangeColor", 1.f, true);
+	}
 }
 
-// Called every frame
 void ACStaticMeshActorBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ACStaticMeshActorBase::ChangeColor()
+{
+	FLinearColor RandomColor;
+	RandomColor.R = UKismetMathLibrary::RandomFloatInRange(0.f, 1.f);
+	RandomColor.G = UKismetMathLibrary::RandomFloatInRange(0.f, 1.f);
+	RandomColor.B = UKismetMathLibrary::RandomFloatInRange(0.f, 1.f);
+	RandomColor.A = 1.f;
+
+	DynamicMaterial->SetVectorParameterValue("BaseColor", RandomColor);
+
+	DynamicMaterial->SetScalarParameterValue("Metallic", RandomColor.R);
+	DynamicMaterial->SetScalarParameterValue("Roughness", RandomColor.G);
 }
 
